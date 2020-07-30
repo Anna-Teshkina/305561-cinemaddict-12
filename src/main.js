@@ -5,6 +5,7 @@
 // 2. Объявление констант
 const CARD_COUNT = 5;
 const CARD_FOOTER_COUNT = 2;
+const EXTRA_BOARD_TITLES = [`Top rated`, `Most commented`];
 
 // - шаблон компоненты со званием пользователя
 const createUserProfileTemplate = () => {
@@ -340,8 +341,9 @@ for (let i = 0; i < CARD_COUNT; i++) {
 }
 
 // - отрисовка 2 extra блоков для фильмов с высоким рейтингом и наиболее обсуждаемых
-render(mainBoardElement, createExtraBoardTemplate(`Top rated`), `beforeend`);
-render(mainBoardElement, createExtraBoardTemplate(`Most commented`), `beforeend`);
+for (let i = 0; i < EXTRA_BOARD_TITLES.length; i++) {
+  render(mainBoardElement, createExtraBoardTemplate(EXTRA_BOARD_TITLES[i]), `beforeend`);
+}
 
 const extraFilmContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
 
