@@ -23,7 +23,7 @@ const GENRES = [`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`];
 const NAMES = [`The Dance of Life`, `Sagebrush Trail`, `The Man with the Golden Arm`, `Santa Claus Conquers the Martians`, `Popeye the Sailor Meets Sindbad the Sailor`, `The Great Flamarion`, `Made for Each Other`];
 
 // название изображений
-const POSTERS = [`made-for-each-other`, `popeye-meets-sinbad`, `sagebrush-trail`, `santa-claus-conquers-the-martians`, `the-dance-of-life`, `the-great-flamarion`, `the-man-with-the-golden-arm`];
+const POSTERS = [`made-for-each-other.png`, `popeye-meets-sinbad.png`, `sagebrush-trail.jpg`, `santa-claus-conquers-the-martians.jpg`, `the-dance-of-life.jpg`, `the-great-flamarion.jpg`, `the-man-with-the-golden-arm.jpg`];
 
 // возрастные ограничения
 const AGE_RAITINGS = [`0`, `6`, `12`, `16`, `18`];
@@ -72,7 +72,7 @@ export const generateFilm = () => {
   return {
     name: filmName,
     fullName: filmName,
-    poster: `/public/images/posters` + getRandomElement(POSTERS) + `.jpg`,
+    poster: `/images/posters/` + getRandomElement(POSTERS),
     description,
     shortDescription: generateShortDescription(description),
     raiting: parseFloat(getRandom(1, 10).toFixed(1)),
@@ -85,6 +85,9 @@ export const generateFilm = () => {
     director: getRandomElement(PERSONS),
     writers: getRandomString(PERSONS, `, `, 1, NAMES.length - 1, false),
     commentsCount: getRandomInteger(0, 5),
-    country: getRandomElement(COUNTRIES)
+    country: getRandomElement(COUNTRIES),
+    isInWatchlist: Boolean(getRandomInteger(0, 1)),
+    isWatched: Boolean(getRandomInteger(0, 1)),
+    isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };
