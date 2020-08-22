@@ -1,8 +1,15 @@
 // СГЕНЕРИРУЕМ МОКИ ДЛЯ ОПИСАНИЯ КАРТОЧЕК ФИЛЬМА
+import {EMOJIES} from "../const.js";
+import {getRandomInteger} from "../utils.js";
+import {getRandom} from "../utils.js";
+import {getRandomElement} from "../utils.js";
+import {getRandomString} from "../utils.js";
 
 // ---------------------------------------------------------------------------------
 // ----- МОКОВЫЕ ДАННЫЕ ------------------------------------------------------------
 // ---------------------------------------------------------------------------------
+
+
 // массив месяцев
 const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 
@@ -32,10 +39,6 @@ const AGE_RAITINGS = [`0`, `6`, `12`, `16`, `18`];
 const COUNTRIES = [`USA`, `Russia`, `China`, `France`, `Germany`, `India`, `Netherlands`, `Poland`];
 // ---------------------------------------------------------------------------------
 
-import {getRandomInteger} from "../utils.js";
-import {getRandom} from "../utils.js";
-import {getRandomElement} from "../utils.js";
-import {getRandomString} from "../utils.js";
 
 // текст для формирования описаний фильмов
 const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
@@ -63,6 +66,26 @@ const getRandomDate = (start, end) =>
 const startProductionDate = new Date(1930, 0, 1);
 const endProductionDate = new Date(1964, 0, 1);
 
+const generateDate = () => {
+  const startDay = new Date(2020, 0, 1);
+  const endDay = new Date(2021, 0, 1);
+  const randomDate = getRandomDate(endDay, startDay);
+
+  return randomDate.getFullYear() + `/` + randomDate.getMonth() + `/` + randomDate.getDate() + ` ` + randomDate.getHours() + `:` + randomDate.getMinutes();
+};
+
+export const generateComment = () => {
+  return {
+    emoji: `/images/emoji/` + getRandomElement(EMOJIES) + `.png`,
+    commentary: getRandomElement(splitDescription),
+    author: getRandomElement(PERSONS),
+    date: generateDate(),
+  };
+};
+
+// const comments = new Array(commentsCount).fill().map(generateComment);
+// console.log(comments);
+
 export const generateFilm = () => {
   const description = getRandomString(splitDescription, `. `, 1, SENTENCES_LIMIT, true);
   const currentDuration = getRandomInteger(START_TIME_DURATION, END_TIME_DURATION);
@@ -71,7 +94,7 @@ export const generateFilm = () => {
 
   return {
     name: filmName,
-    fullName: filmName,
+    originalName: filmName,
     poster: `/images/posters/` + getRandomElement(POSTERS),
     description,
     shortDescription: generateShortDescription(description),
@@ -80,14 +103,14 @@ export const generateFilm = () => {
     year: releaseDate.getFullYear(),
     duration: convertMinToHours(currentDuration),
     genre: getRandomString(GENRES, `, `, 1, GENRES.length - 1, false),
-    ageRaiting: getRandomElement(AGE_RAITINGS),
-    actors: getRandomString(PERSONS, `, `, 1, NAMES.length - 1, false),
+    ageRaiting: getRandomElement(AGE_RAITINGS) + `+`,
     director: getRandomElement(PERSONS),
     writers: getRandomString(PERSONS, `, `, 1, NAMES.length - 1, false),
+    actors: getRandomString(PERSONS, `, `, 1, NAMES.length - 1, false),
     commentsCount: getRandomInteger(0, 5),
     country: getRandomElement(COUNTRIES),
-    isInWatchlist: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
-    isFavorite: Boolean(getRandomInteger(0, 1)),
+    watchlist: Boolean(getRandomInteger(0, 1)),
+    watched: Boolean(getRandomInteger(0, 1)),
+    favorite: Boolean(getRandomInteger(0, 1)),
   };
 };
