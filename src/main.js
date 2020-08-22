@@ -20,6 +20,7 @@ import {ESC_CODE} from "./const.js";
 
 // 2. Объявление констант
 const CARD_COUNT = 20;
+const FILM_COUNT_PER_STEP = 5;
 // const CARD_FOOTER_COUNT = 2;
 // const EXTRA_BOARD_TITLES = [`Top rated`, `Most commented`];
 
@@ -59,15 +60,38 @@ render(siteMainElement, createSortTemplate(), `beforeend`);
 // - отрисовка компоненты доски
 render(siteMainElement, createBoardTemplate(), `beforeend`);
 
-// const mainBoardElement = document.querySelector(`.films`);
+const mainBoardElement = document.querySelector(`.films`);
 const mainBoardListElement = document.querySelector(`.films-list .films-list__container`);
 
 // - отрисовка кнопки загрузки
-render(mainBoardListElement, createShowBtnTemplate(), `afterend`);
+// render(mainBoardListElement, createShowBtnTemplate(), `afterend`);
 
-// - отрисовка 5 карточек на основную доску
-for (let i = 0; i < CARD_COUNT; i++) {
+// Ограничим первую отрисовку по минимальному количеству,
+// чтобы не пытаться рисовать 8 задач, если всего 5
+for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
   render(mainBoardListElement, createCardTemplate(films[i]), `beforeend`);
+}
+
+if (films.length > FILM_COUNT_PER_STEP) {
+  let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
+  render(mainBoardListElement, createShowBtnTemplate(), `afterend`);
+
+  const showMoreButton = mainBoardElement.querySelector(`.films-list__show-more`);
+
+  // По клику будем допоказывать задачи, опираясь на счётчик
+  showMoreButton.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    films
+      .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
+      .forEach((film) => render(mainBoardListElement, createCardTemplate(film), `beforeend`));
+
+    renderedFilmCount += FILM_COUNT_PER_STEP;
+
+    // Если показаны все фильмы - скроем кнопку
+    if (renderedFilmCount >= films.length) {
+      showMoreButton.remove();
+    }
+  });
 }
 
 // - отрисовка 2 extra блоков для фильмов с высоким рейтингом и наиболее обсуждаемых
