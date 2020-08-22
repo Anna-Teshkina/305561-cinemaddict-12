@@ -12,13 +12,14 @@ import {createFooterStatisticTemplate} from "./view/footer-statistic.js";
 
 import {generateFilm} from "./mock/film.js";
 import {generateComment} from "./mock/film.js";
+import {generateFilter} from "./mock/filter.js";
 
 import {ESC_CODE} from "./const.js";
 
 // import {render} from "./utils.js";
 
 // 2. Объявление констант
-const CARD_COUNT = 5;
+const CARD_COUNT = 20;
 // const CARD_FOOTER_COUNT = 2;
 // const EXTRA_BOARD_TITLES = [`Top rated`, `Most commented`];
 
@@ -30,12 +31,6 @@ const siteFooterElement = document.querySelector(`.footer`);
 
 const footerStatisticElement = siteFooterElement.querySelector(`.footer__statistics`);
 
-// ПЕРЕНЕСТИ
-const films = new Array(CARD_COUNT).fill().map(generateFilm);
-// console.log(films);
-const comments = new Array(films[0].commentsCount).fill().map(generateComment);
-// console.log(comments);
-
 // 4. Объявление функций
 
 const render = (container, template, place) => {
@@ -45,11 +40,18 @@ const render = (container, template, place) => {
 
 // 5. Код программы. Вызов функций, использование ранее объявленных переменных, объявление класса. Объявление вычисляемых переменных
 
+const films = new Array(CARD_COUNT).fill().map(generateFilm);
+// console.log(films);
+const comments = new Array(films[0].commentsCount).fill().map(generateComment);
+// console.log(comments);
+const filters = generateFilter(films);
+// console.log(filters);
+
 // - отрисовка компоненты со званием пользователя
 render(siteHeaderElement, createUserProfileTemplate(), `beforeend`);
 
 // - отрисовка компоненты меню
-render(siteMainElement, createMenuTemplate(), `beforeend`);
+render(siteMainElement, createMenuTemplate(filters), `beforeend`);
 
 // - отрисовка компоненты сортировки
 render(siteMainElement, createSortTemplate(), `beforeend`);
@@ -82,7 +84,7 @@ for (let i = 0; i < CARD_COUNT; i++) {
 // });
 
 // - отрисовка статистики в подвале сайта
-render(footerStatisticElement, createFooterStatisticTemplate(), `beforeend`);
+render(footerStatisticElement, createFooterStatisticTemplate(films), `beforeend`);
 
 // - отрисовка попапа с информацией о фильме
 render(siteFooterElement, createPopupTemplate(films[0]), `afterend`);

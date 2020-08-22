@@ -1,4 +1,4 @@
 // - шаблон блока статистики в подвале
-export const createFooterStatisticTemplate = () => {
-  return `<p>130 291 movies inside</p>`;
+export const createFooterStatisticTemplate = (films) => {
+  return `<p> ${films.length} movies inside</p>`;
 };
