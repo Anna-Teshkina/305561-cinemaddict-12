@@ -6,11 +6,16 @@ import {createBoardTemplate} from "./view/board.js";
 // import {createExtraBoardTemplate} from "./view/extra-board.js";
 import {createShowBtnTemplate} from "./view/show-btn.js";
 import {createCardTemplate} from "./view/card.js";
-// import {createPopupTemplate} from "./view/popup.js";
+import {createPopupTemplate} from "./view/popup.js";
+import {createCommentTemplate} from "./view/comment.js";
 import {createFooterStatisticTemplate} from "./view/footer-statistic.js";
 
 import {generateFilm} from "./mock/film.js";
+import {generateComment} from "./mock/film.js";
 
+import {ESC_CODE} from "./const.js";
+
+// import {render} from "./utils.js";
 
 // 2. Объявление констант
 const CARD_COUNT = 5;
@@ -28,7 +33,8 @@ const footerStatisticElement = siteFooterElement.querySelector(`.footer__statist
 // ПЕРЕНЕСТИ
 const films = new Array(CARD_COUNT).fill().map(generateFilm);
 // console.log(films);
-
+const comments = new Array(films[0].commentsCount).fill().map(generateComment);
+// console.log(comments);
 
 // 4. Объявление функций
 
@@ -79,7 +85,27 @@ for (let i = 0; i < CARD_COUNT; i++) {
 render(footerStatisticElement, createFooterStatisticTemplate(), `beforeend`);
 
 // - отрисовка попапа с информацией о фильме
-// render(siteFooterElement, createPopupTemplate(), `afterend`);
+render(siteFooterElement, createPopupTemplate(films[0]), `afterend`);
+
+const popupElement = document.querySelector(`.film-details`);
+const popupCommentList = popupElement.querySelector(`.film-details__comments-list`);
+
+// - отрисовка комменатриев в попапе
+for (let i = 0; i < films[0].commentsCount; i++) {
+  render(popupCommentList, createCommentTemplate(comments[i]), `beforeend`);
+}
+
+// - при клике на кнопку закрыть попап удаляется из DOM
+const popupCloseBtn = popupElement.querySelector(`.film-details__close-btn`);
+popupCloseBtn.addEventListener(`click`, () => popupElement.remove());
+
+const onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_CODE) {
+    popupElement.remove();
+  }
+};
+
+document.addEventListener(`keydown`, onPopupEscPress);
 
 
 // 6. Экспорты
