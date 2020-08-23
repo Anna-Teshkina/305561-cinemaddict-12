@@ -101,7 +101,7 @@ export const generateFilm = () => {
     raiting: parseFloat(getRandom(1, 10).toFixed(1)),
     release: releaseDate.getDate() + ` ` + MONTHS[releaseDate.getMonth()] + ` ` + releaseDate.getFullYear(),
     year: releaseDate.getFullYear(),
-    duration: convertMinToHours(currentDuration),
+    runtime: convertMinToHours(currentDuration),
     genre: getRandomString(GENRES, `, `, 1, GENRES.length - 1, false),
     ageRaiting: getRandomElement(AGE_RAITINGS) + `+`,
     director: getRandomElement(PERSONS),

@@ -1,4 +1,5 @@
 import {EMOJIES} from "../const.js";
+import {convertFirstLetterToUppercase} from "../utils.js";
 
 const createEmojiListTemplate = () => {
   return EMOJIES.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -18,19 +19,10 @@ const createControlsListTemplate = (controls) => {
   <label for="${control}" class="film-details__control-label film-details__control-label--${control}">${controlsDictionary[control]}</label>`).join(``);
 };
 
-const filmTableDictionary = {
-  director: `Director`,
-  writers: `Writers`,
-  actors: `Actors`,
-  release: `Release Date`,
-  duration: `Runtime`,
-  country: `Country`
-};
-
 const createTableTemplate = (table) => {
   return Object.entries(table).map(([key, value]) =>
     `<tr class="film-details__row">
-      <td class="film-details__term"> ${filmTableDictionary[key]} </td>
+      <td class="film-details__term"> ${key === `release` ? convertFirstLetterToUppercase(key) + ` Date` : convertFirstLetterToUppercase(key)} </td>
       <td class="film-details__cell"> ${value} </td>
     </tr>`).join(``);
 };

@@ -1,8 +1,13 @@
 // - шаблон меню
+import {convertFirstLetterToUppercase} from "../utils.js";
+
 const createFilterItemTemplate = (filter, isChecked) => {
   const {name, count} = filter;
   return (
-    `<a href="#${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">${name} ${name !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``}</a>`
+    `<a href="#${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}"> 
+      ${name === `all` ? convertFirstLetterToUppercase(name) + ` movies` : convertFirstLetterToUppercase(name)}
+      ${name !== `all` ? `<span class="main-navigation__item-count"> ${count} </span>` : ``}
+    </a>`
   );
 };
 
