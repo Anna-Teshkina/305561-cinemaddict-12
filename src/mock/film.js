@@ -9,7 +9,6 @@ import {getRandomString} from "../utils.js";
 // ----- МОКОВЫЕ ДАННЫЕ ------------------------------------------------------------
 // ---------------------------------------------------------------------------------
 
-
 // массив месяцев
 const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 
@@ -45,13 +44,14 @@ const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliq
 
 // сформируем из него массив, состоящий из предложений
 const splitDescription = text.split(`.`).map((item) => item.trim());
+// console.log(splitDescription);
 // удаляем последний пустой элемент массива
 splitDescription.pop();
 
 // если описание фильма больше 140 символов, то в карточке отображается
 // 139 символов описания и знак многоточие (…).
 const generateShortDescription = (description) =>
-  description.length < 140 ? description : description.slice(1, 139) + `...`;
+  description.length < 140 ? description : description.slice(0, 139) + `...`;
 
 // переводим время в минутах к формату 12h 35m
 const convertMinToHours = (minutes) =>
