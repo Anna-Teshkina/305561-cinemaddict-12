@@ -42,3 +42,7 @@ export const getRandomString = (array, seperator, minCount, maxCount, flag = tru
   // если ложь - убираем.
   return flag === true ? randomString : randomString.substring(0, randomString.length - 1);
 };
+
+// Функция делает первую букву строки заглавной
+export const convertFirstLetterToUppercase = (word) =>
+  word.slice(0, 1).toUpperCase() + word.slice(1, word.length);
