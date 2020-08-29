@@ -39,8 +39,11 @@ const footerStatisticElement = siteFooterElement.querySelector(`.footer__statist
 
 const films = new Array(CARD_COUNT).fill().map(generateFilm);
 // console.log(films);
-const comments = new Array(films[0].commentsCount).fill().map(generateComment);
+
+// const comments = new Array(films[i].commentsCount).fill().map(generateComment);
+// const comments = films.map((film) => new Array(film.commentsCount).fill().map(generateComment));
 // console.log(comments);
+
 const filters = generateFilter(films);
 // console.log(filters);
 
@@ -48,13 +51,16 @@ const renderCard = (boardListElement, film) => {
   const cardComponent = new CardView(film);
   const popupComponent = new PopupView(film);
 
+  // массив комментариев для данного фильма
+  const comments = new Array(film.commentsCount).fill().map(generateComment);
+
   const showPopup = () => {
     render(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
     const popupCommentList = popupComponent.getElement().querySelector(`.film-details__comments-list`);
 
     // - отрисовка комменатриев в попапе
     for (let i = 0; i < film.commentsCount; i++) {
-      render(popupCommentList, new CommentView(comments[i]).getElement(), `beforeend`);
+      render(popupCommentList, new CommentView(comments[i]).getElement(), RenderPosition.BEFOREEND);
     }
   };
 
