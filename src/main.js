@@ -1,6 +1,6 @@
 // 1. Импорты
 import UserProfileView from "./view/user-profile.js";
-import {createMenuTemplate} from "./view/menu.js";
+import MenuView from "./view/menu.js";
 import SortView from "./view/sort.js";
 import {createBoardTemplate} from "./view/board.js";
 // import {createExtraBoardTemplate} from "./view/extra-board.js";
@@ -47,7 +47,7 @@ const filters = generateFilter(films);
 renderElement(siteHeaderElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты меню
-renderTemplate(siteMainElement, createMenuTemplate(filters), `beforeend`);
+renderElement(siteMainElement, new MenuView(filters).getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты сортировки
 renderElement(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
