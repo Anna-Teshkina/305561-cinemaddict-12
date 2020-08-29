@@ -3,6 +3,9 @@ import UserProfileView from "./view/user-profile.js";
 import MenuView from "./view/menu.js";
 import SortView from "./view/sort.js";
 import BoardView from "./view/board.js";
+import FilmsTitleView from "./view/films-title.js";
+import FilmsContainerView from "./view/films-container.js";
+import NoFilmsTitleView from "./view/no-films-title.js";
 // import {createExtraBoardTemplate} from "./view/extra-board.js";
 import ShowBtnView from "./view/show-btn.js";
 import CardView from "./view/card.js";
@@ -103,38 +106,48 @@ render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new BoardView().getElement(), RenderPosition.BEFOREEND);
 
 const mainBoardElement = document.querySelector(`.films-list`);
-const mainBoardListElement = mainBoardElement.querySelector(`.films-list__container`);
+
+if (films.length === 0) {
+  render(mainBoardElement, new NoFilmsTitleView().getElement(), RenderPosition.BEFOREEND);
+} else {
+  render(mainBoardElement, new FilmsTitleView().getElement(), RenderPosition.BEFOREEND);
+  render(mainBoardElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
+
+  const mainBoardListElement = mainBoardElement.querySelector(`.films-list__container`);
+
+  // Ограничим первую отрисовку по минимальному количеству,
+  // чтобы не пытаться рисовать 8 задач, если всего 5
+  for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
+    renderCard(mainBoardListElement, films[i]);
+  }
+
+  if (films.length > FILM_COUNT_PER_STEP) {
+    let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
+    render(mainBoardElement, new ShowBtnView().getElement(), RenderPosition.BEFOREEND);
+
+    const showMoreButton = mainBoardElement.querySelector(`.films-list__show-more`);
+
+    // По клику будем допоказывать задачи, опираясь на счётчик
+    showMoreButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      films
+        .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
+        .forEach((film) => renderCard(mainBoardListElement, film));
+
+      renderedFilmCount += FILM_COUNT_PER_STEP;
+
+      // Если показаны все фильмы - скроем кнопку
+      if (renderedFilmCount >= films.length) {
+        showMoreButton.remove();
+      }
+    });
+  }
+}
+
 
 // - отрисовка кнопки загрузки
 // render(mainBoardListElement, createShowBtnTemplate(), `afterend`);
 
-// Ограничим первую отрисовку по минимальному количеству,
-// чтобы не пытаться рисовать 8 задач, если всего 5
-for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  renderCard(mainBoardListElement, films[i]);
-}
-
-if (films.length > FILM_COUNT_PER_STEP) {
-  let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
-  render(mainBoardElement, new ShowBtnView().getElement(), RenderPosition.BEFOREEND);
-
-  const showMoreButton = mainBoardElement.querySelector(`.films-list__show-more`);
-
-  // По клику будем допоказывать задачи, опираясь на счётчик
-  showMoreButton.addEventListener(`click`, (evt) => {
-    evt.preventDefault();
-    films
-      .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => renderCard(mainBoardListElement, film));
-
-    renderedFilmCount += FILM_COUNT_PER_STEP;
-
-    // Если показаны все фильмы - скроем кнопку
-    if (renderedFilmCount >= films.length) {
-      showMoreButton.remove();
-    }
-  });
-}
 
 // - отрисовка 2 extra блоков для фильмов с высоким рейтингом и наиболее обсуждаемых
 // for (let i = 0; i < EXTRA_BOARD_TITLES.length; i++) {
