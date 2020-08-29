@@ -2,13 +2,13 @@
 import UserProfileView from "./view/user-profile.js";
 import MenuView from "./view/menu.js";
 import SortView from "./view/sort.js";
-import {createBoardTemplate} from "./view/board.js";
+import BoardView from "./view/board.js";
 // import {createExtraBoardTemplate} from "./view/extra-board.js";
-import {createShowBtnTemplate} from "./view/show-btn.js";
+import ShowBtnView from "./view/show-btn.js";
 import {createCardTemplate} from "./view/card.js";
 import {createPopupTemplate} from "./view/popup.js";
 import {createCommentTemplate} from "./view/comment.js";
-import {createFooterStatisticTemplate} from "./view/footer-statistic.js";
+import FooterStatisticView from "./view/footer-statistic.js";
 
 import {generateFilm} from "./mock/film.js";
 import {generateComment} from "./mock/film.js";
@@ -53,10 +53,10 @@ renderElement(siteMainElement, new MenuView(filters).getElement(), RenderPositio
 renderElement(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты доски
-renderTemplate(siteMainElement, createBoardTemplate(), `beforeend`);
+renderElement(siteMainElement, new BoardView().getElement(), RenderPosition.BEFOREEND);
 
-const mainBoardElement = document.querySelector(`.films`);
-const mainBoardListElement = document.querySelector(`.films-list .films-list__container`);
+const mainBoardElement = document.querySelector(`.films-list`);
+const mainBoardListElement = mainBoardElement.querySelector(`.films-list__container`);
 
 // - отрисовка кнопки загрузки
 // render(mainBoardListElement, createShowBtnTemplate(), `afterend`);
@@ -69,7 +69,7 @@ for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
 
 if (films.length > FILM_COUNT_PER_STEP) {
   let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
-  renderTemplate(mainBoardListElement, createShowBtnTemplate(), `afterend`);
+  renderElement(mainBoardElement, new ShowBtnView().getElement(), RenderPosition.BEFOREEND);
 
   const showMoreButton = mainBoardElement.querySelector(`.films-list__show-more`);
 
@@ -103,7 +103,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
 // });
 
 // - отрисовка статистики в подвале сайта
-renderTemplate(footerStatisticElement, createFooterStatisticTemplate(films), `beforeend`);
+renderElement(footerStatisticElement, new FooterStatisticView(films).getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка попапа с информацией о фильме
 renderTemplate(siteFooterElement, createPopupTemplate(films[0]), `afterend`);
