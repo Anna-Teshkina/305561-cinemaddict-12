@@ -1,5 +1,7 @@
+import {createElement} from "../utils.js";
+
 // - шаблон карточки фильма
-export const createCardTemplate = (film) => {
+const createCardTemplate = (film) => {
   const {name, raiting, year, duration, genre, poster, shortDescription, commentsCount, watchlist, watched, favorite} = film;
 
   // устанавливаем  активный класс на кнопку в зависимости от переданного флага
@@ -27,3 +29,26 @@ export const createCardTemplate = (film) => {
     </form>
   </article>`;
 };
+
+export default class Card {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

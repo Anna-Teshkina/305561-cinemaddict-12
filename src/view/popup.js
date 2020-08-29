@@ -1,5 +1,5 @@
 import {EMOJIES} from "../const.js";
-import {convertFirstLetterToUppercase} from "../utils.js";
+import {convertFirstLetterToUppercase, createElement} from "../utils.js";
 
 const createEmojiListTemplate = () => {
   return EMOJIES.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -35,7 +35,7 @@ const createGenresTemplate = (genres) => {
 };
 
 // - шаблон попапа с информацией о фильме
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {poster, ageRaiting, originalName, raiting, description, director, writers, actors, release, duration, country, commentsCount, watchlist, watched, favorite, genre} = film;
 
   const emojiesTemplate = createEmojiListTemplate();
@@ -114,3 +114,26 @@ export const createPopupTemplate = (film) => {
      </form>
    </section>`;
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

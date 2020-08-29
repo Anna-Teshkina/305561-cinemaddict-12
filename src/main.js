@@ -5,9 +5,9 @@ import SortView from "./view/sort.js";
 import BoardView from "./view/board.js";
 // import {createExtraBoardTemplate} from "./view/extra-board.js";
 import ShowBtnView from "./view/show-btn.js";
-import {createCardTemplate} from "./view/card.js";
-import {createPopupTemplate} from "./view/popup.js";
-import {createCommentTemplate} from "./view/comment.js";
+import CardView from "./view/card.js";
+import PopupView from "./view/popup.js";
+import CommentView from "./view/comment.js";
 import FooterStatisticView from "./view/footer-statistic.js";
 
 import {generateFilm} from "./mock/film.js";
@@ -26,9 +26,10 @@ const FILM_COUNT_PER_STEP = 5;
 
 // 3. Объявление переменных, значение которых известно до начала работы программы
 
-const siteHeaderElement = document.querySelector(`.header`);
-const siteMainElement = document.querySelector(`.main`);
-const siteFooterElement = document.querySelector(`.footer`);
+const siteBodyElement = document.querySelector(`body`);
+const siteHeaderElement = siteBodyElement.querySelector(`.header`);
+const siteMainElement = siteBodyElement.querySelector(`.main`);
+const siteFooterElement = siteBodyElement.querySelector(`.footer`);
 
 const footerStatisticElement = siteFooterElement.querySelector(`.footer__statistics`);
 
@@ -64,7 +65,7 @@ const mainBoardListElement = mainBoardElement.querySelector(`.films-list__contai
 // Ограничим первую отрисовку по минимальному количеству,
 // чтобы не пытаться рисовать 8 задач, если всего 5
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  renderTemplate(mainBoardListElement, createCardTemplate(films[i]), `beforeend`);
+  renderElement(mainBoardListElement, new CardView(films[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 if (films.length > FILM_COUNT_PER_STEP) {
@@ -78,7 +79,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
     evt.preventDefault();
     films
       .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => renderTemplate(mainBoardListElement, createCardTemplate(film), `beforeend`));
+      .forEach((film) => renderElement(mainBoardListElement, new CardView(film).getElement(), RenderPosition.BEFOREEND));
 
     renderedFilmCount += FILM_COUNT_PER_STEP;
 
@@ -106,14 +107,14 @@ if (films.length > FILM_COUNT_PER_STEP) {
 renderElement(footerStatisticElement, new FooterStatisticView(films).getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка попапа с информацией о фильме
-renderTemplate(siteFooterElement, createPopupTemplate(films[0]), `afterend`);
+renderElement(siteBodyElement, new PopupView(films[0]).getElement(), RenderPosition.BEFOREEND);
 
 const popupElement = document.querySelector(`.film-details`);
 const popupCommentList = popupElement.querySelector(`.film-details__comments-list`);
 
 // - отрисовка комменатриев в попапе
 for (let i = 0; i < films[0].commentsCount; i++) {
-  renderTemplate(popupCommentList, createCommentTemplate(comments[i]), `beforeend`);
+  renderElement(popupCommentList, new CommentView(comments[i]).getElement(), `beforeend`);
 }
 
 // - при клике на кнопку закрыть попап удаляется из DOM

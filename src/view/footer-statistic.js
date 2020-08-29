@@ -27,4 +27,3 @@ export default class FooterStatistic {
     this._element = null;
   }
 }
-
