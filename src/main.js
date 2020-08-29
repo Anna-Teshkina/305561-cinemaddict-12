@@ -1,7 +1,7 @@
 // 1. Импорты
-import {createUserProfileTemplate} from "./view/user-profile.js";
+import UserProfileView from "./view/user-profile.js";
 import {createMenuTemplate} from "./view/menu.js";
-import {createSortTemplate} from "./view/sort.js";
+import SortView from "./view/sort.js";
 import {createBoardTemplate} from "./view/board.js";
 // import {createExtraBoardTemplate} from "./view/extra-board.js";
 import {createShowBtnTemplate} from "./view/show-btn.js";
@@ -16,7 +16,7 @@ import {generateFilter} from "./mock/filter.js";
 
 import {ESC_CODE} from "./const.js";
 
-import {renderTemplate} from "./utils.js";
+import {renderTemplate, renderElement, RenderPosition} from "./utils.js";
 
 // 2. Объявление констант
 const CARD_COUNT = 20;
@@ -44,13 +44,13 @@ const filters = generateFilter(films);
 // console.log(filters);
 
 // - отрисовка компоненты со званием пользователя
-renderTemplate(siteHeaderElement, createUserProfileTemplate(), `beforeend`);
+renderElement(siteHeaderElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты меню
 renderTemplate(siteMainElement, createMenuTemplate(filters), `beforeend`);
 
 // - отрисовка компоненты сортировки
-renderTemplate(siteMainElement, createSortTemplate(), `beforeend`);
+renderElement(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты доски
 renderTemplate(siteMainElement, createBoardTemplate(), `beforeend`);
