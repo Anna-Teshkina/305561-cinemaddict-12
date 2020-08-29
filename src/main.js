@@ -16,7 +16,7 @@ import {generateFilter} from "./mock/filter.js";
 
 import {ESC_CODE} from "./const.js";
 
-import {renderTemplate, renderElement, RenderPosition} from "./utils.js";
+import {render, RenderPosition} from "./utils.js";
 
 // 2. Объявление констант
 const CARD_COUNT = 20;
@@ -45,16 +45,16 @@ const filters = generateFilter(films);
 // console.log(filters);
 
 // - отрисовка компоненты со званием пользователя
-renderElement(siteHeaderElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты меню
-renderElement(siteMainElement, new MenuView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new MenuView(filters).getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты сортировки
-renderElement(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты доски
-renderElement(siteMainElement, new BoardView().getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new BoardView().getElement(), RenderPosition.BEFOREEND);
 
 const mainBoardElement = document.querySelector(`.films-list`);
 const mainBoardListElement = mainBoardElement.querySelector(`.films-list__container`);
@@ -65,12 +65,12 @@ const mainBoardListElement = mainBoardElement.querySelector(`.films-list__contai
 // Ограничим первую отрисовку по минимальному количеству,
 // чтобы не пытаться рисовать 8 задач, если всего 5
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  renderElement(mainBoardListElement, new CardView(films[i]).getElement(), RenderPosition.BEFOREEND);
+  render(mainBoardListElement, new CardView(films[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 if (films.length > FILM_COUNT_PER_STEP) {
   let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
-  renderElement(mainBoardElement, new ShowBtnView().getElement(), RenderPosition.BEFOREEND);
+  render(mainBoardElement, new ShowBtnView().getElement(), RenderPosition.BEFOREEND);
 
   const showMoreButton = mainBoardElement.querySelector(`.films-list__show-more`);
 
@@ -79,7 +79,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
     evt.preventDefault();
     films
       .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => renderElement(mainBoardListElement, new CardView(film).getElement(), RenderPosition.BEFOREEND));
+      .forEach((film) => render(mainBoardListElement, new CardView(film).getElement(), RenderPosition.BEFOREEND));
 
     renderedFilmCount += FILM_COUNT_PER_STEP;
 
@@ -104,17 +104,17 @@ if (films.length > FILM_COUNT_PER_STEP) {
 // });
 
 // - отрисовка статистики в подвале сайта
-renderElement(footerStatisticElement, new FooterStatisticView(films).getElement(), RenderPosition.BEFOREEND);
+render(footerStatisticElement, new FooterStatisticView(films).getElement(), RenderPosition.BEFOREEND);
 
 // - отрисовка попапа с информацией о фильме
-renderElement(siteBodyElement, new PopupView(films[0]).getElement(), RenderPosition.BEFOREEND);
+render(siteBodyElement, new PopupView(films[0]).getElement(), RenderPosition.BEFOREEND);
 
 const popupElement = document.querySelector(`.film-details`);
 const popupCommentList = popupElement.querySelector(`.film-details__comments-list`);
 
 // - отрисовка комменатриев в попапе
 for (let i = 0; i < films[0].commentsCount; i++) {
-  renderElement(popupCommentList, new CommentView(comments[i]).getElement(), `beforeend`);
+  render(popupCommentList, new CommentView(comments[i]).getElement(), `beforeend`);
 }
 
 // - при клике на кнопку закрыть попап удаляется из DOM
