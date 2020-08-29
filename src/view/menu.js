@@ -6,7 +6,7 @@ const createFilterItemTemplate = (filter, isChecked) => {
   return (
     `<a href="#${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}"> 
       ${name === `all` ? convertFirstLetterToUppercase(name) + ` movies` : convertFirstLetterToUppercase(name)}
-      ${name !== `all` ? `<span class="main-navigation__item-count"> ${count} </span>` : ``}
+      ${((name !== `all`) && (count < 5)) ? `<span class="main-navigation__item-count"> ${count} </span>` : ``}
     </a>`
   );
 };
