@@ -19,7 +19,7 @@ import {generateFilter} from "./mock/filter.js";
 
 import {ESC_CODE} from "./const.js";
 
-import {render, RenderPosition} from "./utils.js";
+import {render, RenderPosition, remove} from "./utils/render.js";
 
 // 2. Объявление констант
 const CARD_COUNT = 20;
@@ -58,12 +58,12 @@ const renderCard = (boardListElement, film) => {
   const comments = new Array(film.commentsCount).fill().map(generateComment);
 
   const showPopup = () => {
-    render(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
+    render(siteBodyElement, popupComponent, RenderPosition.BEFOREEND);
     const popupCommentList = popupComponent.getElement().querySelector(`.film-details__comments-list`);
 
     // - отрисовка комменатриев в попапе
     for (let i = 0; i < film.commentsCount; i++) {
-      render(popupCommentList, new CommentView(comments[i]).getElement(), RenderPosition.BEFOREEND);
+      render(popupCommentList, new CommentView(comments[i]), RenderPosition.BEFOREEND);
     }
   };
 
@@ -72,49 +72,49 @@ const renderCard = (boardListElement, film) => {
     showPopup();
     siteBodyElement.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, onPopupEscPress);
-  });
 
-  // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
-  // используем дилегирование
-  popupComponent.setPopupCloseClickHandler(() => {
-    popupComponent.getElement().remove();
-    siteBodyElement.classList.remove(`hide-overflow`);
+    // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
+    // используем дилегирование
+    popupComponent.setPopupCloseClickHandler(() => {
+      remove(popupComponent);
+      siteBodyElement.classList.remove(`hide-overflow`);
+    });
   });
 
   // этот метод потом вынесем
   const onPopupEscPress = function (evt) {
     if (evt.keyCode === ESC_CODE) {
-      popupComponent.getElement().remove();
+      remove(popupComponent);
       siteBodyElement.classList.remove(`hide-overflow`);
       document.removeEventListener(`keydown`, onPopupEscPress);
     }
   };
 
-  render(boardListElement, cardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(boardListElement, cardComponent, RenderPosition.BEFOREEND);
 };
 
 // - отрисовка компоненты со званием пользователя
-render(siteHeaderElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты меню
-render(siteMainElement, new MenuView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new MenuView(filters), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты сортировки
-render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortView(), RenderPosition.BEFOREEND);
 
 const renderBoard = (boardContainer, boardsFilms) => {
   const boardComponent = new BoardView();
   const filmsListComponent = new FilmsContainerView();
   // - отрисовка компоненты доски
-  render(boardContainer, boardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(boardContainer, boardComponent, RenderPosition.BEFOREEND);
 
   const mainBoardElement = boardComponent.getElement().querySelector(`.films-list`);
 
   if (boardsFilms.length === 0) {
-    render(mainBoardElement, new NoFilmsTitleView().getElement(), RenderPosition.BEFOREEND);
+    render(mainBoardElement, new NoFilmsTitleView(), RenderPosition.BEFOREEND);
   } else {
-    render(mainBoardElement, new FilmsTitleView().getElement(), RenderPosition.BEFOREEND);
-    render(mainBoardElement, filmsListComponent.getElement(), RenderPosition.BEFOREEND);
+    render(mainBoardElement, new FilmsTitleView(), RenderPosition.BEFOREEND);
+    render(mainBoardElement, filmsListComponent, RenderPosition.BEFOREEND);
 
     // const mainBoardListElement = mainBoardElement.querySelector(`.films-list__container`);
 
@@ -128,7 +128,7 @@ const renderBoard = (boardContainer, boardsFilms) => {
       let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
 
       const showMoreButton = new ShowBtnView();
-      render(mainBoardElement, showMoreButton.getElement(), RenderPosition.BEFOREEND);
+      render(mainBoardElement, showMoreButton, RenderPosition.BEFOREEND);
 
       // По клику будем допоказывать задачи, опираясь на счётчик
       showMoreButton.setClickHandler(() => {
@@ -141,7 +141,7 @@ const renderBoard = (boardContainer, boardsFilms) => {
 
         // Если показаны все фильмы - скроем кнопку
         if (renderedFilmCount >= boardsFilms.length) {
-          showMoreButton.getElement().remove();
+          remove(showMoreButton);
         }
       });
     }
@@ -151,7 +151,7 @@ const renderBoard = (boardContainer, boardsFilms) => {
 renderBoard(siteMainElement, films);
 
 // - отрисовка статистики в подвале сайта
-render(footerStatisticElement, new FooterStatisticView(films).getElement(), RenderPosition.BEFOREEND);
+render(footerStatisticElement, new FooterStatisticView(films), RenderPosition.BEFOREEND);
 
 
 // 6. Экспорты

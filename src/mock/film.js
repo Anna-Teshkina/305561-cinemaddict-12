@@ -1,9 +1,6 @@
 // СГЕНЕРИРУЕМ МОКИ ДЛЯ ОПИСАНИЯ КАРТОЧЕК ФИЛЬМА
 import {EMOJIES} from "../const.js";
-import {getRandomInteger} from "../utils.js";
-import {getRandom} from "../utils.js";
-import {getRandomElement} from "../utils.js";
-import {getRandomString} from "../utils.js";
+import {getRandomInteger, getRandom, getRandomElement, getRandomString} from "../utils/common.js";
 
 // ---------------------------------------------------------------------------------
 // ----- МОКОВЫЕ ДАННЫЕ ------------------------------------------------------------

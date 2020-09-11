@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../utils/render.js";
 
 // - шаблон блока статистики в подвале
 const createFooterStatisticTemplate = (films) => {

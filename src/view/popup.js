@@ -1,5 +1,5 @@
 import {EMOJIES} from "../const.js";
-import {convertFirstLetterToUppercase} from "../utils.js";
+import {convertFirstLetterToUppercase} from "../utils/common.js";
 import AbstractView from "./abstract.js";
 
 const createEmojiListTemplate = () => {
