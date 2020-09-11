@@ -67,26 +67,21 @@ const renderCard = (boardListElement, film) => {
     }
   };
 
-  // п.1.3. Клик по обложке фильма, заголовку, количеству комментариев открывает попап с подробной информацией о фильме;
-  const cardTitle = cardComponent.getElement().querySelector(`.film-card__title`);
-  const cardPoster = cardComponent.getElement().querySelector(`.film-card__poster`);
-  const cardComments = cardComponent.getElement().querySelector(`.film-card__comments`);
-
-  cardComponent.getElement().addEventListener(`click`, (evt) => {
-    if ((evt.target === cardTitle) || (evt.target === cardPoster) || (evt.target === cardComments)) {
-      showPopup();
-      siteBodyElement.classList.add(`hide-overflow`);
-      document.addEventListener(`keydown`, onPopupEscPress);
-    }
+  // Клик по обложке фильма, заголовку, количеству комментариев открывает попап с подробной информацией о фильме;
+  cardComponent.setCardClickHandler(() => {
+    showPopup();
+    siteBodyElement.classList.add(`hide-overflow`);
+    document.addEventListener(`keydown`, onPopupEscPress);
   });
 
-  // - при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
-  const popupCloseBtn = popupComponent.getElement().querySelector(`.film-details__close-btn`);
-  popupCloseBtn.addEventListener(`click`, () => {
+  // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
+  // используем дилегирование
+  popupComponent.setPopupCloseClickHandler(() => {
     popupComponent.getElement().remove();
     siteBodyElement.classList.remove(`hide-overflow`);
   });
 
+  // этот метод потом вынесем
   const onPopupEscPress = function (evt) {
     if (evt.keyCode === ESC_CODE) {
       popupComponent.getElement().remove();
@@ -131,13 +126,13 @@ const renderBoard = (boardContainer, boardsFilms) => {
 
     if (boardsFilms.length > FILM_COUNT_PER_STEP) {
       let renderedFilmCount = FILM_COUNT_PER_STEP; // счетчик показанных фильмов
-      render(mainBoardElement, new ShowBtnView().getElement(), RenderPosition.BEFOREEND);
 
-      const showMoreButton = mainBoardElement.querySelector(`.films-list__show-more`);
+      const showMoreButton = new ShowBtnView();
+      render(mainBoardElement, showMoreButton.getElement(), RenderPosition.BEFOREEND);
 
       // По клику будем допоказывать задачи, опираясь на счётчик
-      showMoreButton.addEventListener(`click`, (evt) => {
-        evt.preventDefault();
+      showMoreButton.setClickHandler(() => {
+        // evt.preventDefault();
         boardsFilms
           .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
           .forEach((film) => renderCard(filmsListComponent.getElement(), film));
@@ -146,7 +141,7 @@ const renderBoard = (boardContainer, boardsFilms) => {
 
         // Если показаны все фильмы - скроем кнопку
         if (renderedFilmCount >= boardsFilms.length) {
-          showMoreButton.remove();
+          showMoreButton.getElement().remove();
         }
       });
     }
@@ -154,19 +149,6 @@ const renderBoard = (boardContainer, boardsFilms) => {
 };
 
 renderBoard(siteMainElement, films);
-
-// - отрисовка 2 extra блоков для фильмов с высоким рейтингом и наиболее обсуждаемых
-// for (let i = 0; i < EXTRA_BOARD_TITLES.length; i++) {
-//   render(mainBoardElement, createExtraBoardTemplate(EXTRA_BOARD_TITLES[i]), `beforeend`);
-// }
-
-// const extraFilmContainers = document.querySelectorAll(`.films-list--extra .films-list__container`);
-
-// Array.from(extraFilmContainers).forEach(function (item) {
-//   for (let i = 0; i < CARD_FOOTER_COUNT; i++) {
-//     render(item, createCardTemplate(), `beforeend`);
-//   }
-// });
 
 // - отрисовка статистики в подвале сайта
 render(footerStatisticElement, new FooterStatisticView(films).getElement(), RenderPosition.BEFOREEND);

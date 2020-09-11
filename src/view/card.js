@@ -34,8 +34,27 @@ export default class Card extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+    this._cardClickHandler = this._cardClickHandler.bind(this);
   }
+
   getTemplate() {
     return createCardTemplate(this._film);
+  }
+
+  _cardClickHandler(evt) {
+    // п.1.3. Клик по обложке фильма, заголовку, количеству комментариев открывает попап с подробной информацией о фильме;
+    const cardTitle = this.getElement().querySelector(`.film-card__title`);
+    const cardPoster = this.getElement().querySelector(`.film-card__poster`);
+    const cardComments = this.getElement().querySelector(`.film-card__comments`);
+
+    if ((evt.target === cardTitle) || (evt.target === cardPoster) || (evt.target === cardComments)) {
+      evt.preventDefault();
+      this._callback.cardClick();
+    }
+  }
+
+  setCardClickHandler(callback) {
+    this._callback.cardClick = callback;
+    this.getElement().addEventListener(`click`, this._cardClickHandler);
   }
 }

@@ -120,8 +120,25 @@ export default class Popup extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
+    this._popupCloseClickHandler = this._popupCloseClickHandler.bind(this);
   }
+
   getTemplate() {
     return createPopupTemplate(this._film);
+  }
+
+  _popupCloseClickHandler(evt) {
+    // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
+    const popupCloseBtn = this.getElement().querySelector(`.film-details__close-btn`);
+
+    if (evt.target === popupCloseBtn) {
+      this._callback.popupCloseClick();
+    }
+  }
+
+  setPopupCloseClickHandler(callback) {
+    this._callback.popupCloseClick = callback;
+    this.getElement().addEventListener(`click`, this._popupCloseClickHandler);
   }
 }
