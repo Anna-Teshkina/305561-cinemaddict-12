@@ -2,10 +2,7 @@ import AbstractView from "./abstract.js";
 
 // - шаблон доски
 const createBoardTemplate = () => {
-  return `<section class="films">
-      <section class="films-list">
-      </section>
-    </section>`;
+  return `<section class="films"></section>`;
 };
 
 export default class Board extends AbstractView {
