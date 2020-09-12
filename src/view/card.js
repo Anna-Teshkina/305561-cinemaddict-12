@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 // - шаблон карточки фильма
 const createCardTemplate = (film) => {
@@ -30,25 +30,31 @@ const createCardTemplate = (film) => {
   </article>`;
 };
 
-export default class Card {
+export default class Card extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._cardClickHandler = this._cardClickHandler.bind(this);
   }
 
   getTemplate() {
     return createCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _cardClickHandler(evt) {
+    // п.1.3. Клик по обложке фильма, заголовку, количеству комментариев открывает попап с подробной информацией о фильме;
+    const cardTitle = this.getElement().querySelector(`.film-card__title`);
+    const cardPoster = this.getElement().querySelector(`.film-card__poster`);
+    const cardComments = this.getElement().querySelector(`.film-card__comments`);
 
-    return this._element;
+    if ((evt.target === cardTitle) || (evt.target === cardPoster) || (evt.target === cardComments)) {
+      evt.preventDefault();
+      this._callback.cardClick();
+    }
   }
 
-  removeElement() {
-    this._element = null;
+  setCardClickHandler(callback) {
+    this._callback.cardClick = callback;
+    this.getElement().addEventListener(`click`, this._cardClickHandler);
   }
 }

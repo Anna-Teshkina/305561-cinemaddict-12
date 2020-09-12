@@ -1,5 +1,6 @@
 import {EMOJIES} from "../const.js";
-import {convertFirstLetterToUppercase, createElement} from "../utils.js";
+import {convertFirstLetterToUppercase} from "../utils/common.js";
+import AbstractView from "./abstract.js";
 
 const createEmojiListTemplate = () => {
   return EMOJIES.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -115,25 +116,29 @@ const createPopupTemplate = (film) => {
    </section>`;
 };
 
-export default class Popup {
+export default class Popup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+
+    this._popupCloseClickHandler = this._popupCloseClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _popupCloseClickHandler(evt) {
+    // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
+    const popupCloseBtn = this.getElement().querySelector(`.film-details__close-btn`);
 
-    return this._element;
+    if (evt.target === popupCloseBtn) {
+      this._callback.popupCloseClick();
+    }
   }
 
-  removeElement() {
-    this._element = null;
+  setPopupCloseClickHandler(callback) {
+    this._callback.popupCloseClick = callback;
+    this.getElement().addEventListener(`click`, this._popupCloseClickHandler);
   }
 }

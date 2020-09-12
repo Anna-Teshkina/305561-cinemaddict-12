@@ -1,5 +1,6 @@
 // - шаблон меню
-import {convertFirstLetterToUppercase, createElement} from "../utils.js";
+import {convertFirstLetterToUppercase} from "../utils/common.js";
+import AbstractView from "./abstract.js";
 
 const createFilterItemTemplate = (filter, isChecked) => {
   const {name, count} = filter;
@@ -24,26 +25,12 @@ const createMenuTemplate = (filterItems) => {
   </nav>`;
 };
 
-export default class Menu {
+export default class Menu extends AbstractView {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
-
   getTemplate() {
     return createMenuTemplate(this._filters);
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
-
