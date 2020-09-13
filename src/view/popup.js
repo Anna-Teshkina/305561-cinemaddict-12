@@ -37,7 +37,7 @@ const createGenresTemplate = (genres) => {
 
 // - шаблон попапа с информацией о фильме
 const createPopupTemplate = (film) => {
-  const {poster, ageRaiting, originalName, raiting, description, director, writers, actors, release, duration, country, commentsCount, watchlist, watched, favorite, genre} = film;
+  const {poster, ageRaiting, originalName, raiting, description, director, writers, actors, release, runtime, country, commentsCount, watchlist, watched, favorite, genre} = film;
 
   const emojiesTemplate = createEmojiListTemplate();
 
@@ -45,7 +45,7 @@ const createPopupTemplate = (film) => {
   // console.log(controls);
   const controlsTemplate = createControlsListTemplate(controls);
 
-  const table = {director, writers, actors, release, duration, country};
+  const table = {director, writers, actors, release, runtime, country};
   const tableTemplate = createTableTemplate(table);
 
   const genresList = genre.split(`,`).map((item) => item.trim());
