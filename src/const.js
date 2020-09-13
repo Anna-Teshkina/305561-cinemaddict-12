@@ -8,3 +8,6 @@ export const SortType = {
   DATE: `by-date`,
   RAITING: `by-raiting`
 };
+
+// массив месяцев
+export const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
