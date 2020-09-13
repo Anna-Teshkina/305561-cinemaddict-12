@@ -1,13 +1,13 @@
 // СГЕНЕРИРУЕМ МОКИ ДЛЯ ОПИСАНИЯ КАРТОЧЕК ФИЛЬМА
-import {EMOJIES} from "../const.js";
+import {EMOJIES, MONTHS} from "../const.js";
 import {getRandomInteger, getRandom, getRandomElement, getRandomString} from "../utils/common.js";
 
 // ---------------------------------------------------------------------------------
 // ----- МОКОВЫЕ ДАННЫЕ ------------------------------------------------------------
 // ---------------------------------------------------------------------------------
 
-// массив месяцев
-const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
+// // массив месяцев
+// const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 
 // максимальное число предложений в описании карточки фильма
 const SENTENCES_LIMIT = 5;
