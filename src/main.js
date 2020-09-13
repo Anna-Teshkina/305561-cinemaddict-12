@@ -57,9 +57,10 @@ render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 render(siteMainElement, new MenuView(filters), RenderPosition.BEFOREEND);
 
 // - отрисовка компоненты сортировки
-render(siteMainElement, new SortView(), RenderPosition.BEFOREEND);
+const sortComponent = new SortView();
+render(siteMainElement, sortComponent, RenderPosition.BEFOREEND);
 
-const boardPresenter = new BoardPresenter(siteMainElement);
+const boardPresenter = new BoardPresenter(siteMainElement, sortComponent);
 boardPresenter.init(films);
 
 // - отрисовка статистики в подвале сайта

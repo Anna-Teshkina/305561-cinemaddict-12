@@ -2,7 +2,7 @@ import AbstractView from "./abstract.js";
 
 // - шаблон карточки фильма
 const createCardTemplate = (film) => {
-  const {name, raiting, year, duration, genre, poster, shortDescription, commentsCount, watchlist, watched, favorite} = film;
+  const {name, raiting, year, runtime, genre, poster, shortDescription, commentsCount, watchlist, watched, favorite} = film;
 
   // устанавливаем  активный класс на кнопку в зависимости от переданного флага
   const setActiveClassName = (flag) => flag ? `film-card__controls-item--active` : ``;
@@ -16,7 +16,7 @@ const createCardTemplate = (film) => {
     <p class="film-card__rating">${raiting}</p>
     <p class="film-card__info">
       <span class="film-card__year">${year}</span>
-      <span class="film-card__duration">${duration}</span>
+      <span class="film-card__duration">${runtime}</span>
       <span class="film-card__genre">${filmGenre}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
