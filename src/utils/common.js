@@ -49,7 +49,7 @@ export const getRandomString = (array, seperator, minCount, maxCount, flag = tru
 export const convertFirstLetterToUppercase = (word) =>
   word.slice(0, 1).toUpperCase() + word.slice(1, word.length);
 
-
+// Переводит массив даты из формата ['18', 'October', '1965'] в массив [1965, 10, 18];
 const convertToNumberDate = (dateArray) => {
   const newDateArray = [];
 
