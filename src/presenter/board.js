@@ -6,19 +6,14 @@ import FilmsTitleView from "../view/films-title.js";
 import NoFilmsTitleView from "../view/no-films-title.js";
 import ShowBtnView from "../view/show-btn.js";
 
-import CardView from "../view/card.js";
-import PopupView from "../view/popup.js";
-import CommentView from "../view/comment.js";
+import CardPresenter from "./card.js";
 
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortDate, sortRaiting} from "../utils/common.js";
 
-import {generateComment} from "../mock/film.js";
-import {ESC_CODE, SortType} from "../const.js";
+import {SortType} from "../const.js";
 
 const FILM_COUNT_PER_STEP = 5;
-
-const siteBodyElement = document.querySelector(`body`);
 
 export default class Board {
   constructor(boardContainer, sortComponent) {
@@ -95,49 +90,8 @@ export default class Board {
   }
 
   _renderCard(film) {
-    // Метод, куда уйдёт логика созданию и рендерингу компонетов задачи,
-    // текущая функция renderTask в main.js
-
-    const cardComponent = new CardView(film);
-    const popupComponent = new PopupView(film);
-
-    // массив комментариев для данного фильма
-    const comments = new Array(film.commentsCount).fill().map(generateComment);
-
-    const showPopup = () => {
-      render(siteBodyElement, popupComponent, RenderPosition.BEFOREEND);
-      const popupCommentList = popupComponent.getElement().querySelector(`.film-details__comments-list`);
-
-      // - отрисовка комменатриев в попапе
-      for (let i = 0; i < film.commentsCount; i++) {
-        render(popupCommentList, new CommentView(comments[i]), RenderPosition.BEFOREEND);
-      }
-    };
-
-    // Клик по обложке фильма, заголовку, количеству комментариев открывает попап с подробной информацией о фильме;
-    cardComponent.setCardClickHandler(() => {
-      showPopup();
-      siteBodyElement.classList.add(`hide-overflow`);
-      document.addEventListener(`keydown`, onPopupEscPress);
-
-      // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
-      // используем дилегирование
-      popupComponent.setPopupCloseClickHandler(() => {
-        remove(popupComponent);
-        siteBodyElement.classList.remove(`hide-overflow`);
-      });
-    });
-
-    // этот метод потом вынесем
-    const onPopupEscPress = function (evt) {
-      if (evt.keyCode === ESC_CODE) {
-        remove(popupComponent);
-        siteBodyElement.classList.remove(`hide-overflow`);
-        document.removeEventListener(`keydown`, onPopupEscPress);
-      }
-    };
-
-    render(this._boardListComponent, cardComponent, RenderPosition.BEFOREEND);
+    const cardPresenter = new CardPresenter(this._boardListComponent);
+    cardPresenter.init(film);
   }
 
   _renderCards(from, to) {
