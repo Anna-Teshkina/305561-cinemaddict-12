@@ -2,6 +2,9 @@
 import {EMOJIES, MONTHS} from "../const.js";
 import {getRandomInteger, getRandom, getRandomElement, getRandomString} from "../utils/common.js";
 
+// генерируем id для карточки фильма
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 // ---------------------------------------------------------------------------------
 // ----- МОКОВЫЕ ДАННЫЕ ------------------------------------------------------------
 // ---------------------------------------------------------------------------------
@@ -90,6 +93,7 @@ export const generateFilm = () => {
   const filmName = getRandomElement(NAMES);
 
   return {
+    id: generateId(),
     name: filmName,
     originalName: filmName,
     poster: `/images/posters/` + getRandomElement(POSTERS),

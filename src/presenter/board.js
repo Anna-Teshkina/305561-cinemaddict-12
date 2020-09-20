@@ -19,6 +19,8 @@ export default class Board {
   constructor(boardContainer, sortComponent) {
     this._boardContainer = boardContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
+    this._cardPresenter = {};
 
     this._sortComponent = sortComponent;
     this._boardComponent = new BoardView();
@@ -28,9 +30,7 @@ export default class Board {
     this._showMoreButton = new ShowBtnView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._currentSortType = SortType.DEFAULT;
   }
 
   init(boardFilms) {
@@ -92,6 +92,7 @@ export default class Board {
   _renderCard(film) {
     const cardPresenter = new CardPresenter(this._boardListComponent);
     cardPresenter.init(film);
+    this._cardPresenter[film.id] = cardPresenter;
   }
 
   _renderCards(from, to) {
@@ -119,7 +120,10 @@ export default class Board {
   }
 
   _clearCardList() {
-    this._boardListComponent.getElement().innerHTML = ``;
+    Object
+      .values(this._cardPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._cardPresenter = {};
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
   }
 
