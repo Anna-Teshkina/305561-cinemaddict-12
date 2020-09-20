@@ -1,4 +1,3 @@
-
 import BoardView from "../view/board.js";
 import FilmsContainerView from "../view/films-container.js";
 import FilmsListView from "../view/films-list.js";
@@ -7,6 +6,7 @@ import NoFilmsTitleView from "../view/no-films-title.js";
 import ShowBtnView from "../view/show-btn.js";
 
 import CardPresenter from "./card.js";
+import {updateItem} from "../utils/common.js";
 
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortDate, sortRaiting} from "../utils/common.js";
@@ -29,6 +29,7 @@ export default class Board {
     this._noFilmComponent = new NoFilmsTitleView();
     this._showMoreButton = new ShowBtnView();
 
+    this._handleCardChange = this._handleCardChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -47,6 +48,12 @@ export default class Board {
     render(this._boardContainer, this._boardComponent, RenderPosition.BEFOREEND);
     render(this._boardComponent, this._mainBoardComponent, RenderPosition.BEFOREEND);
     this._renderBoard();
+  }
+
+  _handleCardChange(updatedFilm) {
+    this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+    this._sourcedBoardFilms = updateItem(this._sourcedBoardFilms, updatedFilm);
+    this._cardPresenter[updatedFilm.id].init(updatedFilm);
   }
 
   _sortCards(sortType) {
