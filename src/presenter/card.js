@@ -70,4 +70,9 @@ export default class Card {
       document.removeEventListener(`keydown`, this._onEscPressHandler);
     }
   }
+
+  destroy() {
+    remove(this._cardComponent);
+    remove(this._popupComponent);
+  }
 }
