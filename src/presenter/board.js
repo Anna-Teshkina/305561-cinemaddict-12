@@ -97,7 +97,7 @@ export default class Board {
   }
 
   _renderCard(film) {
-    const cardPresenter = new CardPresenter(this._boardListComponent);
+    const cardPresenter = new CardPresenter(this._boardListComponent, this._handleCardChange);
     cardPresenter.init(film);
     this._cardPresenter[film.id] = cardPresenter;
   }

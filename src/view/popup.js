@@ -122,6 +122,7 @@ export default class Popup extends AbstractView {
     this._film = film;
 
     this._popupCloseClickHandler = this._popupCloseClickHandler.bind(this);
+    this._popupControlsClickHandler = this._popupControlsClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -133,12 +134,50 @@ export default class Popup extends AbstractView {
     const popupCloseBtn = this.getElement().querySelector(`.film-details__close-btn`);
 
     if (evt.target === popupCloseBtn) {
+      console.log('popup close');
+      
+      // console.log(112);
       this._callback.popupCloseClick();
     }
   }
 
+  _popupControlsClickHandler(evt) {
+    const popupControls = this.getElement().querySelector(`.film-details__controls`);
+    const popupControlsList = popupControls.querySelectorAll(`.film-details__control-label`);
+
+    Array.from(popupControlsList).forEach((item) => {
+      if (evt.target === item) {
+        //evt.preventDefault();
+        console.log('controls click (popup)');
+
+        let key;
+        item.classList.contains(`film-details__control-label--watchlist`) ? key = `watchlist` : ``;
+        item.classList.contains(`film-details__control-label--watched`) ? key = `watched` : ``;
+        item.classList.contains(`film-details__control-label--favorite`) ? key = `favorite` : ``;
+        this._callback.popupControlsClick(key);
+
+        // восстановим обработчик
+        // this.restoreHandlers();
+      }
+    });
+  }
+
+  // restoreHandlers() {
+  //   // this.setPopupCloseClickHandler(this._callback.popupCloseClick);
+  //   // this.setPopupControlsClickHandler(this._callback.popupControlsClick);
+
+  //   // this._setInnerHandlers();
+  // }
+
+
+
   setPopupCloseClickHandler(callback) {
     this._callback.popupCloseClick = callback;
     this.getElement().addEventListener(`click`, this._popupCloseClickHandler);
+  }
+
+  setPopupControlsClickHandler(callback) {
+    this._callback.popupControlsClick = callback;
+    this.getElement().addEventListener(`click`, this._popupControlsClickHandler);
   }
 }
