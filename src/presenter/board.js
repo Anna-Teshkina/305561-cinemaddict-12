@@ -32,6 +32,8 @@ export default class Board {
     this._handleCardChange = this._handleCardChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    // this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(boardFilms) {
@@ -54,6 +56,12 @@ export default class Board {
     this._boardFilms = updateItem(this._boardFilms, updatedFilm);
     this._sourcedBoardFilms = updateItem(this._sourcedBoardFilms, updatedFilm);
     this._cardPresenter[updatedFilm.id].init(updatedFilm);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._cardPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _sortCards(sortType) {

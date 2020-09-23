@@ -63,12 +63,22 @@ export default class Card extends AbstractView {
     Array.from(cardControlsList).forEach((item) => {
       if (evt.target === item) {
         evt.preventDefault();
-        item.classList.toggle('film-card__controls-item--active');
+        item.classList.toggle(`film-card__controls-item--active`);
 
         let key;
-        item.classList.contains(`film-card__controls-item--add-to-watchlist`) ? key = `watchlist` : ``;
-        item.classList.contains(`film-card__controls-item--mark-as-watched`) ? key = `watched` : ``;
-        item.classList.contains(`film-card__controls-item--favorite`) ? key = `favorite` : ``;
+
+        if (item.classList.contains(`film-card__controls-item--add-to-watchlist`)) {
+          key = `watchlist`;
+        }
+        if (item.classList.contains(`film-card__controls-item--mark-as-watched`)) {
+          key = `watched`;
+        }
+        if (item.classList.contains(`film-card__controls-item--favorite`)) {
+          key = `favorite`;
+        }
+        // item.classList.contains(`film-card__controls-item--add-to-watchlist`) ? key = `watchlist` : ``;
+        // item.classList.contains(`film-card__controls-item--mark-as-watched`) ? key = `watched` : ``;
+        // item.classList.contains(`film-card__controls-item--favorite`) ? key = `favorite` : ``;
         this._callback.controlsClick(key);
       }
     });
