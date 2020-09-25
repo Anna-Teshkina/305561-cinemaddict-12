@@ -135,7 +135,7 @@ export default class Popup extends Smart {
 
     this._popupCloseClickHandler = this._popupCloseClickHandler.bind(this);
     this._popupFormKeyDownHandler = this._popupFormKeyDownHandler.bind(this);
-    this._popupFormChangeHandler = this._popupFormChangeHandler.bind(this);
+    this._popupControlsChangeHandler = this._popupControlsChangeHandler.bind(this);
 
     this._onEscPressHandler = this._onEscPressHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
@@ -237,42 +237,26 @@ export default class Popup extends Smart {
     this.getElement().scrollTop = scroll;
   }
 
-  _popupFormChangeHandler(evt) {
+  _popupControlsChangeHandler(evt) {
     evt.preventDefault();
 
-    if (evt.target.classList.contains(`film-details__control-input`)) {
+    const formData = new FormData(this.getElement().querySelector(`form`));
 
-      const update = {
-        watchlist: !!(new FormData(this.getElement().querySelector(`form`)).get(`watchlist`)),
-        watched: !!(new FormData(this.getElement().querySelector(`form`)).get(`watched`)),
-        favorite: !!(new FormData(this.getElement().querySelector(`form`)).get(`favorite`)),
-      };
+    const update = {
+      watchlist: !!(formData.get(`watchlist`)),
+      watched: !!(formData.get(`watched`)),
+      favorite: !!(formData.get(`favorite`)),
+    };
 
-      let scroll = this.getElement().scrollTop;
+    let scroll = this.getElement().scrollTop;
 
-      this.updateData(update);
-      this.updateData({comment: this._comment});
-      this._callback.popupControlsChange(update);
+    this.updateData(update);
+    this.updateData({comment: this._comment});
+    this._callback.popupControlsChange(update);
 
-      this._renderComments(this._commentList);
+    this._renderComments(this._commentList);
 
-      this.getElement().scrollTop = scroll;
-
-      // const popupUpdate = Object.assign(
-      //     {},
-      //     {comment: this._comment},
-      //     update
-      // );
-
-      // this.updateData(popupUpdate);
-    }
-
-    // if (evt.target === this.getElement().querySelector(`.film-details__comment-input`)) {
-    //   this._comment = evt.target.value;
-    //   // console.log(this._comment);
-    //   this.updateData({comment: this._comment});
-    //   console.log(2);
-    // }
+    this.getElement().scrollTop = scroll;
   }
 
   showPopup() {
@@ -336,6 +320,6 @@ export default class Popup extends Smart {
 
   setPopupControlsChangeHandler(callback) {
     this._callback.popupControlsChange = callback;
-    this.getElement().querySelector(`.film-details__inner`).addEventListener(`change`, this._popupFormChangeHandler);
+    this.getElement().querySelector(`.film-details__inner .film-details__controls`).addEventListener(`change`, this._popupControlsChangeHandler);
   }
 }
