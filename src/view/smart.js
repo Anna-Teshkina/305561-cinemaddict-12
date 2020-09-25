@@ -29,25 +29,16 @@ export default class Smart extends AbstractView {
   updateElement() {
     let prevElement = this.getElement();
 
-    let scroll = prevElement.scrollTop;
+    // let scroll = prevElement.scrollTop;
     const parent = prevElement.parentElement;
     this.removeElement();
 
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
-    newElement.scrollTop = scroll;
+    // newElement.scrollTop = scroll;
     prevElement = null; // Чтобы окончательно "убить" ссылку на prevElement
 
     this.restoreHandlers();
-  }
-
-  // восстанавливаем обработчики внутренние и внешние
-  restoreHandlers() {
-    this.setPopupCloseClickHandler(this._callback.popupCloseClick);
-    // this.setPopupControlsClickHandler(this._callback.popupControlsClick);
-    this.setPopupFormKeyDown(this._callback.popupFormKeyDown);
-
-    this._setInnerHandlers();
   }
 }

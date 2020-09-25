@@ -21,6 +21,10 @@ export const getRandomElement = (array) => {
   return array[randomIndex];
 };
 
+export const setDateFormat = (date) => {
+  return date.getFullYear() + `/` + (date.getMonth() + 1) + `/` + date.getDate() + ` ` + date.getHours() + `:` + date.getMinutes();
+};
+
 // Функция генерирует СТРОКУ СЛУЧАЙНОЙ ДЛИНЫ ИЗ УНИКАЛЬНЫХ СЛУЧАЙНЫХ ЭЛЕМЕНТОВ
 // - элементы отделены друг от друга сепаратором
 // - если флаг истина, то оставляем сепаратор в конце последнего элемента, если ложь - убираем.

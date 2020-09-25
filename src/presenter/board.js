@@ -32,8 +32,7 @@ export default class Board {
     this._handleCardChange = this._handleCardChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
-    // this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(boardFilms) {
@@ -105,7 +104,7 @@ export default class Board {
   }
 
   _renderCard(film) {
-    const cardPresenter = new CardPresenter(this._boardListComponent, this._handleCardChange);
+    const cardPresenter = new CardPresenter(this._boardListComponent, this._handleCardChange, this._handleModeChange);
     cardPresenter.init(film);
     this._cardPresenter[film.id] = cardPresenter;
   }

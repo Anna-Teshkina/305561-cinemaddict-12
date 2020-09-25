@@ -1,6 +1,6 @@
 // СГЕНЕРИРУЕМ МОКИ ДЛЯ ОПИСАНИЯ КАРТОЧЕК ФИЛЬМА
 import {EMOJIES, MONTHS} from "../const.js";
-import {getRandomInteger, getRandom, getRandomElement, getRandomString} from "../utils/common.js";
+import {getRandomInteger, getRandom, getRandomElement, getRandomString, setDateFormat} from "../utils/common.js";
 
 // генерируем id для карточки фильма
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
@@ -71,7 +71,8 @@ const generateDate = () => {
   const endDay = new Date(2021, 0, 1);
   const randomDate = getRandomDate(endDay, startDay);
 
-  return randomDate.getFullYear() + `/` + randomDate.getMonth() + `/` + randomDate.getDate() + ` ` + randomDate.getHours() + `:` + randomDate.getMinutes();
+  // return randomDate.getFullYear() + `/` + randomDate.getMonth() + `/` + randomDate.getDate() + ` ` + randomDate.getHours() + `:` + randomDate.getMinutes();
+  return setDateFormat(randomDate);
 };
 
 export const generateComment = () => {

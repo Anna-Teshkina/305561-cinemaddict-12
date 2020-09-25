@@ -1,7 +1,10 @@
-import AbstractView from "./abstract.js";
+// import AbstractView from "./abstract.js";
+import Smart from "./smart.js";
 
 // - шаблон комментария
 const createCommentTemplate = (comment) => {
+  // console.log(1);
+  // console.log(comment);
   const {emoji, commentary, author, date} = comment;
 
   return `<li class="film-details__comment">
@@ -19,12 +22,24 @@ const createCommentTemplate = (comment) => {
   </li>`;
 };
 
-export default class Comment extends AbstractView {
+export default class Comment extends Smart {
   constructor(comment) {
     super();
     this._comment = comment;
+    // this._container = container;
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
   }
+
   getTemplate() {
     return createCommentTemplate(this._comment);
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    // console.log(1);
+  }
+
+  setDeleteClickHandler() {
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteClickHandler);
   }
 }
