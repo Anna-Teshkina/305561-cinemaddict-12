@@ -21,6 +21,10 @@ export const getRandomElement = (array) => {
   return array[randomIndex];
 };
 
+export const setDateFormat = (date) => {
+  return date.getFullYear() + `/` + (date.getMonth() + 1) + `/` + date.getDate() + ` ` + date.getHours() + `:` + date.getMinutes();
+};
+
 // Функция генерирует СТРОКУ СЛУЧАЙНОЙ ДЛИНЫ ИЗ УНИКАЛЬНЫХ СЛУЧАЙНЫХ ЭЛЕМЕНТОВ
 // - элементы отделены друг от друга сепаратором
 // - если флаг истина, то оставляем сепаратор в конце последнего элемента, если ложь - убираем.
@@ -95,4 +99,19 @@ export const sortDate = (cardA, cardB) => {
 
 export const sortRaiting = (cardA, cardB) => {
   return cardB.raiting - cardA.raiting;
+};
+
+// универсальная функция обновления элемента массива
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1)
+  ];
 };

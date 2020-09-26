@@ -1,6 +1,11 @@
-import {EMOJIES} from "../const.js";
-import {convertFirstLetterToUppercase} from "../utils/common.js";
-import AbstractView from "./abstract.js";
+import {EMOJIES, ENTER_CODE, ESC_CODE} from "../const.js";
+import {convertFirstLetterToUppercase, setDateFormat} from "../utils/common.js";
+import Smart from "./smart.js";
+import {generateComment} from "../mock/film.js";
+import {render, RenderPosition} from "../utils/render.js";
+import CommentView from "../view/comment.js";
+
+const siteBodyElement = document.querySelector(`body`);
 
 const createEmojiListTemplate = () => {
   return EMOJIES.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
@@ -36,13 +41,13 @@ const createGenresTemplate = (genres) => {
 };
 
 // - шаблон попапа с информацией о фильме
-const createPopupTemplate = (film) => {
-  const {poster, ageRaiting, originalName, raiting, description, director, writers, actors, release, runtime, country, commentsCount, watchlist, watched, favorite, genre} = film;
+const createPopupTemplate = (data) => {
+  const {poster, ageRaiting, originalName, raiting, description, director, writers, actors, release, runtime, country, commentsCount, watchlist, watched, favorite, genre, emoji, comment} = data;
 
   const emojiesTemplate = createEmojiListTemplate();
 
   const controls = {watchlist, watched, favorite};
-  // console.log(controls);
+
   const controlsTemplate = createControlsListTemplate(controls);
 
   const table = {director, writers, actors, release, runtime, country};
@@ -50,6 +55,10 @@ const createPopupTemplate = (film) => {
 
   const genresList = genre.split(`,`).map((item) => item.trim());
   const genresTemplate = createGenresTemplate(genresList);
+
+  const chosenEmoji = emoji ? `<img src="${emoji}" width="55" height="55" alt="emoji-smile">` : ``;
+
+  const currentComment = comment ? comment : ``;
 
   return `<section class="film-details">
      <form class="film-details__inner" action="" method="get">
@@ -93,17 +102,17 @@ const createPopupTemplate = (film) => {
        </div>
 
        <div class="form-details__bottom-container">
-         <section class="film-details__comments-wrap">
-           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
+         <section class="film-details__commentList-wrap">
+           <h3 class="film-details__commentList-title">Comments <span class="film-details__commentList-count">${commentsCount}</span></h3>
 
-           <ul class="film-details__comments-list">
+           <ul class="film-details__commentList-list">
            </ul>
 
            <div class="film-details__new-comment">
-             <div for="add-emoji" class="film-details__add-emoji-label"></div>
+             <div for="add-emoji" class="film-details__add-emoji-label"> ${chosenEmoji} </div>
 
              <label class="film-details__comment-label">
-               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${currentComment}</textarea>
              </label>
 
              <div class="film-details__emoji-list">
@@ -116,29 +125,201 @@ const createPopupTemplate = (film) => {
    </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends Smart {
   constructor(film) {
     super();
-    this._film = film;
+    this._data = Popup.parseFilmToData(film);
+    this._comment = ``;
+    // this.emoji = ``;
+    this._commentList = ``;
 
     this._popupCloseClickHandler = this._popupCloseClickHandler.bind(this);
+    this._popupFormKeyDownHandler = this._popupFormKeyDownHandler.bind(this);
+    this._popupControlsChangeHandler = this._popupControlsChangeHandler.bind(this);
+
+    this._onEscPressHandler = this._onEscPressHandler.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film);
+    return createPopupTemplate(this._data);
   }
 
+  static parseFilmToData(film) {
+    return Object.assign(
+        {},
+        film,
+        {
+          emoji: null,
+          comment: null
+        }
+    );
+  }
+
+  static parseDataToFilm(data) {
+    data = Object.assign({}, data);
+
+    delete data.emoji;
+    delete data.comment;
+
+    return data;
+  }
+
+  // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
   _popupCloseClickHandler(evt) {
-    // при клике на кнопку закрыть или при нажатии на клавишу ESC попап удаляется из DOM
     const popupCloseBtn = this.getElement().querySelector(`.film-details__close-btn`);
 
     if (evt.target === popupCloseBtn) {
-      this._callback.popupCloseClick();
+      // console.log('popup close');
+      this._callback.popupCloseClick(Popup.parseDataToFilm(this._data));
     }
+  }
+
+  _onEscPressHandler(evt) {
+    if (evt.keyCode === ESC_CODE) {
+      this._callback.popupEscPress(Popup.parseDataToFilm(this._data));
+      document.removeEventListener(`keydown`, this._onEscPressHandler);
+    }
+  }
+
+  _renderComments() {
+    this._commentList.forEach((comment) => this._renderComment(comment));
+  }
+
+  _renderComment(comment) {
+    const popupCommentList = this.getElement().querySelector(`.film-details__commentList-list`);
+    const commentView = new CommentView(comment);
+    render(popupCommentList, commentView, RenderPosition.BEFOREEND);
+    commentView.setDeleteClickHandler();
+  }
+
+  _popupFormKeyDownHandler(evt) {
+    // evt.preventDefault();
+
+    this._comment = evt.target.value;
+
+    // запоминаем позицию скролла
+    let scroll = this.getElement().scrollTop;
+
+    const sendCommentCondition = this._comment !== `` && this._data.emoji &&
+    (evt.ctrlKey && evt.keyCode === ENTER_CODE) || (evt.metaKey && evt.keyCode === ENTER_CODE);
+
+    // если стоит картинка и текстовое поле не пусто, то
+    if (sendCommentCondition) {
+      // 1 - обновить массив с комментариями
+      // 1.1 - создадим новый объект с данными текущего комментария
+      const newComment = {
+        emoji: this._data.emoji,
+        commentary: this._comment,
+        author: `Unknown person`,
+        date: setDateFormat(new Date()),
+      };
+
+      // 1.2 - добавим новый комментарий в массив комментариев
+      this._commentList.push(newComment);
+
+      // 2 - reset формы
+      this._reset();
+
+      // 3 - увеличить кол-во комментариев на 1 (для карточки на доске и количества комментариев в списке)
+      this.updateData({commentsCount: this._commentList.length});
+
+      // 4 - отрендерить новый массив с комментариями
+      this._renderComments();
+
+      // 5 - вызов коллбэка
+      this._callback.popupFormKeyDown(`commentsCount`);
+    }
+
+    // восстанавливаем позицию скролла
+    this.getElement().scrollTop = scroll;
+  }
+
+  _popupControlsChangeHandler(evt) {
+    evt.preventDefault();
+
+    const formData = new FormData(this.getElement().querySelector(`form`));
+
+    const update = {
+      watchlist: !!(formData.get(`watchlist`)),
+      watched: !!(formData.get(`watched`)),
+      favorite: !!(formData.get(`favorite`)),
+    };
+
+    let scroll = this.getElement().scrollTop;
+
+    this.updateData(update);
+    this.updateData({comment: this._comment});
+    this._callback.popupControlsChange(update);
+
+    this._renderComments(this._commentList);
+
+    this.getElement().scrollTop = scroll;
+  }
+
+  showPopup() {
+    // массив комментариев для данного фильма
+    render(siteBodyElement, this.getElement(), RenderPosition.BEFOREEND);
+    this._commentList = new Array(this._data.commentsCount).fill().map(generateComment);
+
+    // console.log(this._commentList);
+    this._renderComments();
+  }
+
+  _emojiClickHandler(evt) {
+    evt.preventDefault();
+
+    if (evt.target.src) {
+      let scroll = this.getElement().scrollTop;
+
+      this.updateData({emoji: evt.target.src, comment: this._comment});
+      this._renderComments();
+
+      this.getElement().scrollTop = scroll;
+    }
+  }
+
+  _reset() {
+    // 1 - удалить картинку
+    this.getElement().querySelector(`.film-details__add-emoji-label img`).remove();
+    // 2 - очистить value textarea
+    this._comment = null;
+    this.updateData({comment: null, emoji: null});
+  }
+
+  // устанавливаем внутренние обработчики
+  _setInnerHandlers() {
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, this._emojiClickHandler);
+  }
+
+  // восстанавливаем обработчики внутренние и внешние
+  restoreHandlers() {
+    this.setPopupCloseClickHandler(this._callback.popupCloseClick);
+    this.setPopupControlsChangeHandler(this._callback.popupControlsChange);
+    this.setPopupFormKeyDown(this._callback.popupFormKeyDown);
+
+    this._setInnerHandlers();
+  }
+
+  setPopupFormKeyDown(callback) {
+    this._callback.popupFormKeyDown = callback;
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keyup`, this._popupFormKeyDownHandler);
   }
 
   setPopupCloseClickHandler(callback) {
     this._callback.popupCloseClick = callback;
     this.getElement().addEventListener(`click`, this._popupCloseClickHandler);
+  }
+
+  setPopupEscCallback(callback) {
+    this._callback.popupEscPress = callback;
+    document.addEventListener(`keydown`, this._onEscPressHandler);
+  }
+
+  setPopupControlsChangeHandler(callback) {
+    this._callback.popupControlsChange = callback;
+    this.getElement().querySelector(`.film-details__inner .film-details__controls`).addEventListener(`change`, this._popupControlsChangeHandler);
   }
 }

@@ -34,7 +34,9 @@ export default class Card extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
     this._cardClickHandler = this._cardClickHandler.bind(this);
+    this._cardControlsClickHandler = this._cardControlsClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -51,6 +53,40 @@ export default class Card extends AbstractView {
       evt.preventDefault();
       this._callback.cardClick();
     }
+  }
+
+  _cardControlsClickHandler(evt) {
+    const cardControls = this.getElement().querySelector(`.film-card__controls`);
+    // смена активного класса при нажатии
+    const cardControlsList = cardControls.querySelectorAll(`.film-card__controls-item`);
+
+    Array.from(cardControlsList).forEach((item) => {
+      if (evt.target === item) {
+        evt.preventDefault();
+        item.classList.toggle(`film-card__controls-item--active`);
+
+        let key;
+
+        if (item.classList.contains(`film-card__controls-item--add-to-watchlist`)) {
+          key = `watchlist`;
+        }
+        if (item.classList.contains(`film-card__controls-item--mark-as-watched`)) {
+          key = `watched`;
+        }
+        if (item.classList.contains(`film-card__controls-item--favorite`)) {
+          key = `favorite`;
+        }
+        // item.classList.contains(`film-card__controls-item--add-to-watchlist`) ? key = `watchlist` : ``;
+        // item.classList.contains(`film-card__controls-item--mark-as-watched`) ? key = `watched` : ``;
+        // item.classList.contains(`film-card__controls-item--favorite`) ? key = `favorite` : ``;
+        this._callback.controlsClick(key);
+      }
+    });
+  }
+
+  setCardControlsClickHandler(callback) {
+    this._callback.controlsClick = callback;
+    this.getElement().addEventListener(`click`, this._cardControlsClickHandler);
   }
 
   setCardClickHandler(callback) {
