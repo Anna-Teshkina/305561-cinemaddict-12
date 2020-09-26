@@ -1,5 +1,5 @@
 import {EMOJIES, ENTER_CODE, ESC_CODE} from "../const.js";
-import {convertFirstLetterToUppercase, setDateFormat} from "../utils/common.js";
+import {convertFirstLetterToUppercase, formatCommentaryDate} from "../utils/common.js";
 import Smart from "./smart.js";
 import {generateComment} from "../mock/film.js";
 import {render, RenderPosition} from "../utils/render.js";
@@ -214,7 +214,7 @@ export default class Popup extends Smart {
         emoji: this._data.emoji,
         commentary: this._comment,
         author: `Unknown person`,
-        date: setDateFormat(new Date()),
+        date: formatCommentaryDate(new Date()),
       };
 
       // 1.2 - добавим новый комментарий в массив комментариев

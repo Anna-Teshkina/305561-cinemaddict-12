@@ -1,6 +1,7 @@
 // СГЕНЕРИРУЕМ МОКИ ДЛЯ ОПИСАНИЯ КАРТОЧЕК ФИЛЬМА
-import {EMOJIES, MONTHS} from "../const.js";
-import {getRandomInteger, getRandom, getRandomElement, getRandomString, setDateFormat} from "../utils/common.js";
+import {EMOJIES} from "../const.js";
+// import {getRandomInteger, getRandom, getRandomElement, getRandomString, setDateFormat} from "../utils/common.js";
+import {getRandomInteger, getRandom, getRandomElement, getRandomString, formatFilmDuration, formatReleaseDate, formatCommentaryDate} from "../utils/common.js";
 
 // генерируем id для карточки фильма
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
@@ -54,8 +55,8 @@ const generateShortDescription = (description) =>
   description.length < 140 ? description : description.slice(0, 139) + `...`;
 
 // переводим время в минутах к формату 12h 35m
-const convertMinToHours = (minutes) =>
-  minutes < 60 ? minutes + `m` : Math.ceil(minutes / 60) + `h ` + (minutes % 60) + `m`;
+// const convertMinToHours = (minutes) =>
+//   minutes < 60 ? minutes + `m` : Math.ceil(minutes / 60) + `h ` + (minutes % 60) + `m`;
 
 // функция возвращает произвольную дату из интервала
 const getRandomDate = (start, end) =>
@@ -72,7 +73,8 @@ const generateDate = () => {
   const randomDate = getRandomDate(endDay, startDay);
 
   // return randomDate.getFullYear() + `/` + randomDate.getMonth() + `/` + randomDate.getDate() + ` ` + randomDate.getHours() + `:` + randomDate.getMinutes();
-  return setDateFormat(randomDate);
+  // return setDateFormat(randomDate);
+  return randomDate;
 };
 
 export const generateComment = () => {
@@ -80,7 +82,7 @@ export const generateComment = () => {
     emoji: `/images/emoji/` + getRandomElement(EMOJIES) + `.png`,
     commentary: getRandomElement(splitDescription),
     author: getRandomElement(PERSONS),
-    date: generateDate(),
+    date: formatCommentaryDate(generateDate()),
   };
 };
 
@@ -101,9 +103,9 @@ export const generateFilm = () => {
     description,
     shortDescription: generateShortDescription(description),
     raiting: parseFloat(getRandom(1, 10).toFixed(1)),
-    release: releaseDate.getDate() + ` ` + MONTHS[releaseDate.getMonth()] + ` ` + releaseDate.getFullYear(),
+    release: formatReleaseDate(releaseDate),
     year: releaseDate.getFullYear(),
-    runtime: convertMinToHours(currentDuration),
+    runtime: formatFilmDuration(currentDuration),
     genre: getRandomString(GENRES, `, `, 1, GENRES.length - 1, false),
     ageRaiting: getRandomElement(AGE_RAITINGS) + `+`,
     director: getRandomElement(PERSONS),

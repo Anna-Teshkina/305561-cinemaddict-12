@@ -10,5 +10,7 @@ export const SortType = {
   RAITING: `by-raiting`
 };
 
+export const MINUTES_IN_HOUR = 60;
+
 // массив месяцев
-export const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
+// export const MONTHS = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
